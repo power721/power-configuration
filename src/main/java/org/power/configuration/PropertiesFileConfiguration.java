@@ -6,12 +6,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Objects;
 import java.util.Properties;
 
-public class PropertiesFileConfiguration implements Configuration {
+public class PropertiesFileConfiguration extends FileConfiguration {
 
-    protected File file;
     protected Properties properties;
 
     public PropertiesFileConfiguration(String pathname) throws IOException {
@@ -31,123 +29,14 @@ public class PropertiesFileConfiguration implements Configuration {
     }
 
     @Override
-    public String get(String key) {
-        return properties.getProperty(key);
-    }
-
-    @Override
     public String get(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
-    }
-
-    @Override
-    public Integer getInt(String key) {
-        return getInt(key, null);
-    }
-
-    @Override
-    public Integer getInt(String key, Integer defaultValue) {
-        String value = properties.getProperty(key);
-
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException e) {
-            // ignore
-        }
-
-        return defaultValue;
-    }
-
-    @Override
-    public Long getLong(String key) {
-        return getLong(key, null);
-    }
-
-    @Override
-    public Long getLong(String key, Long defaultValue) {
-        String value = properties.getProperty(key);
-
-        try {
-            return Long.parseLong(value);
-        } catch (NumberFormatException e) {
-            // ignore
-        }
-
-        return defaultValue;
-    }
-
-    @Override
-    public Double getDouble(String key) {
-        return getDouble(key, null);
-    }
-
-    @Override
-    public Double getDouble(String key, Double defaultValue) {
-        String value = properties.getProperty(key);
-
-        if (value != null) {
-            try {
-                return Double.parseDouble(value);
-            } catch (NumberFormatException e) {
-                // ignore
-            }
-        }
-
-        return defaultValue;
-    }
-
-    @Override
-    public Boolean getBoolean(String key) {
-        return getBoolean(key, null);
-    }
-
-    @Override
-    public Boolean getBoolean(String key, Boolean defaultValue) {
-        String value = properties.getProperty(key);
-
-        if (value != null) {
-            if ("true".equalsIgnoreCase(value)) {
-                return true;
-            } else if ("false".equalsIgnoreCase(value)) {
-                return false;
-            }
-        }
-
-        return defaultValue;
     }
 
     @Override
     public String set(String key, String value) {
         Object oval = properties.setProperty(key, value);
         return (oval instanceof String) ? (String) oval : null;
-    }
-
-    @Override
-    public Integer set(String key, Integer value) {
-        Integer oval = getInt(key);
-        properties.setProperty(key, Objects.toString(value));
-        return oval;
-    }
-
-    @Override
-    public Long set(String key, Long value) {
-        Long oval = getLong(key);
-        properties.setProperty(key, Objects.toString(value));
-        return oval;
-    }
-
-    @Override
-    public Double set(String key, Double value) {
-        Double oval = getDouble(key);
-        properties.setProperty(key, Objects.toString(value));
-        return oval;
-    }
-
-    @Override
-    public Boolean set(String key, Boolean value) {
-        Boolean oval = getBoolean(key);
-        properties.setProperty(key, Objects.toString(value));
-        return oval;
     }
 
     @Override
@@ -158,48 +47,11 @@ public class PropertiesFileConfiguration implements Configuration {
     }
 
     @Override
-    public Integer save(String key, Integer value) throws IOException {
-        Integer oval = getInt(key);
-        properties.setProperty(key, Objects.toString(value));
-        this.store("update " + key);
-        return oval;
-    }
-
-    @Override
-    public Long save(String key, Long value) throws IOException {
-        Long oval = getLong(key);
-        properties.setProperty(key, Objects.toString(value));
-        this.store("update " + key);
-        return oval;
-    }
-
-    @Override
-    public Double save(String key, Double value) throws IOException {
-        Double oval = getDouble(key);
-        properties.setProperty(key, Objects.toString(value));
-        this.store("update " + key);
-        return oval;
-    }
-
-    @Override
-    public Boolean save(String key, Boolean value) throws IOException {
-        Boolean oval = getBoolean(key);
-        properties.setProperty(key, Objects.toString(value));
-        this.store("update " + key);
-        return oval;
-    }
-
-    @Override
     public void reload() throws IOException {
         try (InputStream is = new FileInputStream(file)) {
             properties = new Properties();
             properties.load(is);
         }
-    }
-
-    @Override
-    public void save() throws IOException {
-        this.store("save all properties");
     }
 
     protected void store(String comment) throws IOException {

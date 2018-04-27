@@ -1,6 +1,7 @@
 package org.power.configuration;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public interface Configuration {
 
@@ -8,31 +9,99 @@ public interface Configuration {
 
     String get(String key, String defaultValue);
 
-    Integer getInt(String key);
+    default Integer getInt(String key) {
+        return getInt(key, null);
+    }
 
-    Integer getInt(String key, Integer defaultValue);
+    default Integer getInt(String key, Integer defaultValue) {
+        String value = get(key);
 
-    Long getLong(String key);
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
 
-    Long getLong(String key, Long defaultValue);
+        return defaultValue;
+    }
 
-    Double getDouble(String key);
+    default Long getLong(String key) {
+        return getLong(key, null);
+    }
 
-    Double getDouble(String key, Double defaultValue);
+    default Long getLong(String key, Long defaultValue) {
+        String value = get(key);
 
-    Boolean getBoolean(String key);
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
 
-    Boolean getBoolean(String key, Boolean defaultValue);
+        return defaultValue;
+    }
+
+    default Double getDouble(String key) {
+        return getDouble(key, null);
+    }
+
+    default Double getDouble(String key, Double defaultValue) {
+        String value = get(key);
+
+        if (value != null) {
+            try {
+                return Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                // ignore
+            }
+        }
+
+        return defaultValue;
+    }
+
+    default Boolean getBoolean(String key) {
+        return getBoolean(key, null);
+    }
+
+    default Boolean getBoolean(String key, Boolean defaultValue) {
+        String value = get(key);
+
+        if (value != null) {
+            if ("true".equalsIgnoreCase(value)) {
+                return true;
+            } else if ("false".equalsIgnoreCase(value)) {
+                return false;
+            }
+        }
+
+        return defaultValue;
+    }
 
     String set(String key, String value);
 
-    Integer set(String key, Integer value);
+    default Integer set(String key, Integer value) {
+        Integer oval = getInt(key);
+        set(key, Objects.toString(value));
+        return oval;
+    }
 
-    Long set(String key, Long value);
+    default Long set(String key, Long value) {
+        Long oval = getLong(key);
+        set(key, Objects.toString(value));
+        return oval;
+    }
 
-    Double set(String key, Double value);
+    default Double set(String key, Double value) {
+        Double oval = getDouble(key);
+        set(key, Objects.toString(value));
+        return oval;
+    }
 
-    Boolean set(String key, Boolean value);
+    default Boolean set(String key, Boolean value) {
+        Boolean oval = getBoolean(key);
+        set(key, Objects.toString(value));
+        return oval;
+    }
 
     String save(String key, String value) throws IOException;
 
