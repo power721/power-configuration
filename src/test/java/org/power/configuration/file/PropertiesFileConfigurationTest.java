@@ -1,4 +1,4 @@
-package org.power.configuration;
+package org.power.configuration.file;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
+import org.power.configuration.Configuration;
 
 public class PropertiesFileConfigurationTest {
 

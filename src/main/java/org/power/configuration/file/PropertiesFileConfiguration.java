@@ -1,4 +1,4 @@
-package org.power.configuration;
+package org.power.configuration.file;
 
 import java.io.File;
 import java.io.FileInputStream;

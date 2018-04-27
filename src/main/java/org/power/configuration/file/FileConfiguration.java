@@ -1,8 +1,9 @@
-package org.power.configuration;
+package org.power.configuration.file;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import org.power.configuration.Configuration;
 
 public abstract class FileConfiguration implements Configuration {
 
