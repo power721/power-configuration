@@ -1,48 +1,57 @@
-package org.power.configuration;
+package org.power.configuration.system;
 
 import java.io.IOException;
+import java.util.Objects;
+import org.power.configuration.Configuration;
 
-public class SystemEnviromentConfiguration implements Configuration {
+public class SystemPropertiesConfiguration implements Configuration {
 
     @Override
     public String get(String key) {
-        return System.getenv(key);
+        return System.getProperty(key);
     }
 
     @Override
     public String get(String key, String defaultValue) {
-        String value = System.getenv(key);
-        return value == null ? defaultValue : value;
+        return System.getProperty(key, defaultValue);
     }
 
     @Override
     public String set(String key, String value) {
-        return null;
+        return System.setProperty(key, value);
     }
 
     @Override
     public String save(String key, String value) throws IOException {
-        return null;
+        return System.setProperty(key, value);
     }
 
     @Override
     public Integer save(String key, Integer value) throws IOException {
-        return null;
+        Integer old = getInt(key);
+        System.setProperty(key, Objects.toString(value));
+        return old;
     }
 
     @Override
     public Long save(String key, Long value) throws IOException {
-        return null;
+        Long old = getLong(key);
+        System.setProperty(key, Objects.toString(value));
+        return old;
     }
 
     @Override
     public Double save(String key, Double value) throws IOException {
-        return null;
+        Double old = getDouble(key);
+        System.setProperty(key, Objects.toString(value));
+        return old;
     }
 
     @Override
     public Boolean save(String key, Boolean value) throws IOException {
-        return null;
+        Boolean old = getBoolean(key);
+        System.setProperty(key, Objects.toString(value));
+        return old;
     }
 
     @Override
