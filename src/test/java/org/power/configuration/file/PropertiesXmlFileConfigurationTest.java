@@ -1,5 +1,7 @@
 package org.power.configuration.file;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 import org.junit.Before;
+import org.junit.Test;
 
 public class PropertiesXmlFileConfigurationTest extends PropertiesFileConfigurationTest {
 
@@ -20,10 +23,19 @@ public class PropertiesXmlFileConfigurationTest extends PropertiesFileConfigurat
         properties.setProperty("debug", "true");
         String file = this.getClass().getResource("/").getFile() + "app.xml";
         try (OutputStream out = new FileOutputStream(file)) {
-            properties.storeToXML(out, "");
+            properties.storeToXML(out, "initialize");
         }
 
         conf = new PropertiesXmlFileConfiguration(file);
+    }
+
+    @Test
+    public void testDeleteLongValueNotMatch() throws Exception {
+        assertThat(conf.getLong("time")).isEqualTo(time);
+
+        assertThat(conf.delete("time", 5L)).isFalse();
+
+        assertThat(conf.getLong("time")).isEqualTo(time);
     }
 
     protected Properties loadProperties() throws IOException {
@@ -38,7 +50,7 @@ public class PropertiesXmlFileConfigurationTest extends PropertiesFileConfigurat
     protected void saveProperties(Properties properties) throws IOException {
         String file = this.getClass().getResource("/app.xml").getFile();
         try (OutputStream out = new FileOutputStream(file)) {
-            properties.storeToXML(out, "");
+            properties.storeToXML(out, "update");
         }
     }
 

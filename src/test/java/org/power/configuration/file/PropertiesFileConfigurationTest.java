@@ -27,7 +27,7 @@ public class PropertiesFileConfigurationTest {
         properties.setProperty("debug", "true");
         String file = this.getClass().getResource("/").getFile() + "app.properties";
         try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "");
+            properties.store(out, "initialize");
         }
 
         conf = new PropertiesFileConfiguration(file);
@@ -204,11 +204,11 @@ public class PropertiesFileConfigurationTest {
 
     @Test
     public void testDeleteValueNotMatch() throws Exception {
-        assertThat(conf.get("name")).isEqualTo("power");
+        assertThat(conf.getInt("id")).isEqualTo(1);
 
-        assertThat(conf.delete("name", "test")).isFalse();
+        assertThat(conf.delete("id", 5)).isFalse();
 
-        assertThat(conf.get("name")).isEqualTo("power");
+        assertThat(conf.getInt("id")).isEqualTo(1);
     }
 
     @Test
@@ -306,7 +306,7 @@ public class PropertiesFileConfigurationTest {
     protected void saveProperties(Properties properties) throws IOException {
         String file = this.getClass().getResource("/app.properties").getFile();
         try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "");
+            properties.store(out, "update");
         }
     }
 

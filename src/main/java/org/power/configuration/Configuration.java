@@ -107,6 +107,22 @@ public interface Configuration {
 
     boolean delete(String key, String value);
 
+    default boolean delete(String key, Integer value) {
+        return delete(key, Objects.toString(value));
+    }
+
+    default boolean delete(String key, Long value) {
+        return delete(key, Objects.toString(value));
+    }
+
+    default boolean delete(String key, Double value) {
+        return delete(key, Objects.toString(value));
+    }
+
+    default boolean delete(String key, Boolean value) {
+        return delete(key, Objects.toString(value));
+    }
+
     String save(String key, String value) throws IOException;
 
     Integer save(String key, Integer value) throws IOException;
