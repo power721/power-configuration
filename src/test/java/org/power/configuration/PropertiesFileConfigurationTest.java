@@ -240,6 +240,15 @@ public class PropertiesFileConfigurationTest {
     }
 
     @Test
+    public void testSaveUTF8() throws Exception {
+        conf.set("name", "中文");
+        conf.save();
+
+        Properties properties = loadProperties();
+        assertThat(properties.getProperty("name")).isEqualTo("中文");
+    }
+
+    @Test
     public void testReloadConfFile() throws Exception {
 
         Properties properties = loadProperties();

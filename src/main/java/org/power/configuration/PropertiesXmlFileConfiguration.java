@@ -11,7 +11,7 @@ import java.util.Properties;
 public class PropertiesXmlFileConfiguration extends PropertiesFileConfiguration {
 
     public PropertiesXmlFileConfiguration(String pathname) throws IOException {
-        super(pathname);
+        this(new File(pathname));
     }
 
     public PropertiesXmlFileConfiguration(File file) throws IOException {
