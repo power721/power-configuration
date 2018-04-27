@@ -22,6 +22,16 @@ public class SystemEnviromentConfiguration implements Configuration {
     }
 
     @Override
+    public boolean delete(String key) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(String key, String value) {
+        return false;
+    }
+
+    @Override
     public String save(String key, String value) throws IOException {
         return null;
     }

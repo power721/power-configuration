@@ -103,6 +103,10 @@ public interface Configuration {
         return oval;
     }
 
+    boolean delete(String key);
+
+    boolean delete(String key, String value);
+
     String save(String key, String value) throws IOException;
 
     Integer save(String key, Integer value) throws IOException;

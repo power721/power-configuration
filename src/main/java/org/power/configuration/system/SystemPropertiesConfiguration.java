@@ -22,6 +22,22 @@ public class SystemPropertiesConfiguration implements Configuration {
     }
 
     @Override
+    public boolean delete(String key) {
+        System.clearProperty(key);
+        return true;
+    }
+
+    @Override
+    public boolean delete(String key, String value) {
+        String old = System.getProperty(key);
+        if (Objects.equals(old, value)) {
+            System.clearProperty(key);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public String save(String key, String value) throws IOException {
         return System.setProperty(key, value);
     }

@@ -40,6 +40,18 @@ public class PropertiesFileConfiguration extends FileConfiguration {
     }
 
     @Override
+    public boolean delete(String key) {
+        boolean result = properties.containsKey(key);
+        properties.remove(key);
+        return result;
+    }
+
+    @Override
+    public boolean delete(String key, String value) {
+        return properties.remove(key, value);
+    }
+
+    @Override
     public String save(String key, String value) throws IOException {
         Object oval = properties.setProperty(key, value);
         this.store("update " + key);

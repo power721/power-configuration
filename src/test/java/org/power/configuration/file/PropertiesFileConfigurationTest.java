@@ -185,6 +185,33 @@ public class PropertiesFileConfigurationTest {
     }
 
     @Test
+    public void testDeleteKey() throws Exception {
+        assertThat(conf.get("name")).isEqualTo("power");
+
+        assertThat(conf.delete("name")).isTrue();
+
+        assertThat(conf.get("name")).isNull();
+    }
+
+    @Test
+    public void testDeleteValue() throws Exception {
+        assertThat(conf.get("name")).isEqualTo("power");
+
+        assertThat(conf.delete("name", "power")).isTrue();
+
+        assertThat(conf.get("name")).isNull();
+    }
+
+    @Test
+    public void testDeleteValueNotMatch() throws Exception {
+        assertThat(conf.get("name")).isEqualTo("power");
+
+        assertThat(conf.delete("name", "test")).isFalse();
+
+        assertThat(conf.get("name")).isEqualTo("power");
+    }
+
+    @Test
     public void testSaveValue() throws Exception {
         assertThat(conf.get("name")).isEqualTo("power");
 
