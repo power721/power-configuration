@@ -26,10 +26,12 @@ public class PropertiesFileConfiguration implements Configuration {
         }
     }
 
+    @Override
     public String get(String key) {
         return properties.getProperty(key);
     }
 
+    @Override
     public String get(String key, String defaultValue) {
         return properties.getProperty(key, defaultValue);
     }
@@ -110,6 +112,7 @@ public class PropertiesFileConfiguration implements Configuration {
         return defaultValue;
     }
 
+    @Override
     public String set(String key, String value) {
         Object oval = properties.setProperty(key, value);
         return (oval instanceof String) ? (String) oval : null;
@@ -143,6 +146,7 @@ public class PropertiesFileConfiguration implements Configuration {
         return oval;
     }
 
+    @Override
     public String save(String key, String value) throws IOException {
         Object oval = properties.setProperty(key, value);
         try (OutputStream out = new FileOutputStream(file)) {
@@ -191,6 +195,7 @@ public class PropertiesFileConfiguration implements Configuration {
         return oval;
     }
 
+    @Override
     public void reload() throws IOException {
         try (InputStream is = new FileInputStream(file)) {
             properties = new Properties();
@@ -198,6 +203,7 @@ public class PropertiesFileConfiguration implements Configuration {
         }
     }
 
+    @Override
     public void save() throws IOException {
         try (OutputStream out = new FileOutputStream(file)) {
             properties.store(out, "save all properties");
