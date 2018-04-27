@@ -11,8 +11,8 @@ import java.util.Properties;
 
 public class PropertiesFileConfiguration implements Configuration {
 
-    private File file;
-    private Properties properties;
+    protected File file;
+    protected Properties properties;
 
     public PropertiesFileConfiguration(String pathname) throws IOException {
         this(new File(pathname));
@@ -20,6 +20,10 @@ public class PropertiesFileConfiguration implements Configuration {
 
     public PropertiesFileConfiguration(File file) throws IOException {
         this.file = file;
+        this.init();
+    }
+
+    protected void init() throws IOException {
         try (InputStream is = new FileInputStream(file)) {
             properties = new Properties();
             properties.load(is);
@@ -149,9 +153,7 @@ public class PropertiesFileConfiguration implements Configuration {
     @Override
     public String save(String key, String value) throws IOException {
         Object oval = properties.setProperty(key, value);
-        try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "update " + key);
-        }
+        this.store("update " + key);
         return (oval instanceof String) ? (String) oval : null;
     }
 
@@ -159,9 +161,7 @@ public class PropertiesFileConfiguration implements Configuration {
     public Integer save(String key, Integer value) throws IOException {
         Integer oval = getInt(key);
         properties.setProperty(key, Objects.toString(value));
-        try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "update " + key);
-        }
+        this.store("update " + key);
         return oval;
     }
 
@@ -169,9 +169,7 @@ public class PropertiesFileConfiguration implements Configuration {
     public Long save(String key, Long value) throws IOException {
         Long oval = getLong(key);
         properties.setProperty(key, Objects.toString(value));
-        try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "update " + key);
-        }
+        this.store("update " + key);
         return oval;
     }
 
@@ -179,9 +177,7 @@ public class PropertiesFileConfiguration implements Configuration {
     public Double save(String key, Double value) throws IOException {
         Double oval = getDouble(key);
         properties.setProperty(key, Objects.toString(value));
-        try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "update " + key);
-        }
+        this.store("update " + key);
         return oval;
     }
 
@@ -189,9 +185,7 @@ public class PropertiesFileConfiguration implements Configuration {
     public Boolean save(String key, Boolean value) throws IOException {
         Boolean oval = getBoolean(key);
         properties.setProperty(key, Objects.toString(value));
-        try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "update " + key);
-        }
+        this.store("update " + key);
         return oval;
     }
 
@@ -205,8 +199,12 @@ public class PropertiesFileConfiguration implements Configuration {
 
     @Override
     public void save() throws IOException {
+        this.store("save all properties");
+    }
+
+    protected void store(String comment) throws IOException {
         try (OutputStream out = new FileOutputStream(file)) {
-            properties.store(out, "save all properties");
+            properties.store(out, comment);
         }
     }
 
