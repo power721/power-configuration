@@ -7,7 +7,11 @@ import org.power.configuration.Configuration;
 
 public abstract class FileConfiguration implements Configuration {
 
-    protected File file;
+    protected final File file;
+
+    protected FileConfiguration(File file) {
+        this.file = file;
+    }
 
     @Override
     public String get(String key) {

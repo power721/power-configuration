@@ -17,7 +17,7 @@ public class PropertiesFileConfiguration extends FileConfiguration {
     }
 
     public PropertiesFileConfiguration(File file) throws IOException {
-        this.file = file;
+        super(file);
         this.init();
     }
 
