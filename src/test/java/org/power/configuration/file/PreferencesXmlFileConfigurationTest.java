@@ -82,6 +82,9 @@ public class PreferencesXmlFileConfigurationTest extends FileConfigurationTest {
     public void testSaveValueToNode() throws Exception {
         conf.save("org.power.conf.version", 3);
         assertThat(conf.getInt("org.power.conf.version")).isEqualTo(3);
+
+        Preferences preferences = loadPreferences();
+        assertThat(preferences.node("org/power/conf").getInt("version", 0)).isEqualTo(3);
     }
 
     @Test
@@ -109,7 +112,7 @@ public class PreferencesXmlFileConfigurationTest extends FileConfigurationTest {
     private String loadFileToString() throws IOException {
         String file = this.getClass().getResource("/app_pref.xml").getFile();
         FileInputStream is = new FileInputStream(file);
-        byte[] buffer = new byte[65536];
+        byte[] buffer = new byte[1024 * 4];
         int n = is.read(buffer);
         return new String(buffer, 0, n);
     }
