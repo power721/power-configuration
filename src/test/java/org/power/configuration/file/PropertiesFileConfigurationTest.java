@@ -212,6 +212,21 @@ public class PropertiesFileConfigurationTest {
     }
 
     @Test
+    public void testDeleteDoubleValue() throws Exception {
+        conf.set("test", 2.0E5);
+        assertThat(conf.delete("test", 200000.0)).isTrue();
+
+        assertThat(conf.get("test")).isNull();
+    }
+
+    @Test
+    public void testDeleteBooleanValue() throws Exception {
+        assertThat(conf.delete("debug", true)).isTrue();
+
+        assertThat(conf.get("debug")).isNull();
+    }
+
+    @Test
     public void testSaveValue() throws Exception {
         assertThat(conf.get("name")).isEqualTo("power");
 
