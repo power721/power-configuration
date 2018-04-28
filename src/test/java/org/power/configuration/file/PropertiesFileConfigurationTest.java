@@ -49,7 +49,6 @@ public class PropertiesFileConfigurationTest extends FileConfigurationTest {
 
     @Test
     public void testReloadConfFile() throws Exception {
-
         Properties properties = loadProperties();
 
         properties.setProperty("name", "test");
