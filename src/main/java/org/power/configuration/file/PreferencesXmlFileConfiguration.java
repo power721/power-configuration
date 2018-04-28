@@ -77,7 +77,11 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
 
     @Override
     public void reload() throws IOException {
-
+        try {
+            Preferences.importPreferences(new FileInputStream(file));
+        } catch (InvalidPreferencesFormatException e) {
+            throw new IOException("Cannot parse Preferences file.", e);
+        }
     }
 
     private Preferences getNode(String key) {

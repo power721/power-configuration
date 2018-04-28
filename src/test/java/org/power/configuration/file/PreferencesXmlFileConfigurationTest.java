@@ -84,6 +84,19 @@ public class PreferencesXmlFileConfigurationTest extends FileConfigurationTest {
         assertThat(conf.getInt("org.power.conf.version")).isEqualTo(3);
     }
 
+    @Test
+    public void testReloadConfFile() throws Exception {
+        String content = loadFileToString();
+        content = content.replace("true", "false");
+        saveStringToFile(content);
+
+        assertThat(conf.getBoolean("debug")).isTrue();
+
+        conf.reload();
+
+        assertThat(conf.getBoolean("debug")).isFalse();
+    }
+
     private Preferences loadPreferences() throws IOException, InvalidPreferencesFormatException {
         String file = this.getClass().getResource("/app_pref.xml").getFile();
         Preferences preferences = Preferences.userRoot();
@@ -91,6 +104,21 @@ public class PreferencesXmlFileConfigurationTest extends FileConfigurationTest {
             Preferences.importPreferences(is);
         }
         return preferences;
+    }
+
+    private String loadFileToString() throws IOException {
+        String file = this.getClass().getResource("/app_pref.xml").getFile();
+        FileInputStream is = new FileInputStream(file);
+        byte[] buffer = new byte[65536];
+        int n = is.read(buffer);
+        return new String(buffer, 0, n);
+    }
+
+    private void saveStringToFile(String content) throws IOException {
+        String file = this.getClass().getResource("/app_pref.xml").getFile();
+        try (FileOutputStream os = new FileOutputStream(file)) {
+            os.write(content.getBytes());
+        }
     }
 
 }
