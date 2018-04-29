@@ -10,7 +10,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
 import org.power.configuration.event.ConfigurationChangeEvent;
-import org.power.configuration.event.ConfigurationInitializedEvent;
+import org.power.configuration.event.ConfigurationItemDeletedEvent;
 import org.power.configuration.event.ConfigurationReloadedEvent;
 
 public class PreferencesXmlFileConfiguration extends FileConfiguration {
@@ -29,7 +29,6 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
         } catch (InvalidPreferencesFormatException e) {
             throw new IOException("Cannot parse Preferences file.", e);
         }
-        eventEmitter.emit(new ConfigurationInitializedEvent(this));
     }
 
     @Override
@@ -49,6 +48,10 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
     @Override
     public boolean delete(String key) {
         Preferences node = getNode(key);
+        String old = node.get(getName(key), null);
+        if (old != null) {
+            eventEmitter.emit(new ConfigurationItemDeletedEvent(this, key));
+        }
         node.remove(getName(key));
         return true;
     }
@@ -59,6 +62,7 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
         String old = node.get(getName(key), null);
         if (Objects.equals(old, value)) {
             node.remove(getName(key));
+            eventEmitter.emit(new ConfigurationItemDeletedEvent(this, key));
             return true;
         }
         return false;

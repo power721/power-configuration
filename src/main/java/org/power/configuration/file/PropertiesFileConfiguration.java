@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 import org.power.configuration.event.ConfigurationChangeEvent;
-import org.power.configuration.event.ConfigurationInitializedEvent;
+import org.power.configuration.event.ConfigurationItemDeletedEvent;
 import org.power.configuration.event.ConfigurationReloadedEvent;
 
 public class PropertiesFileConfiguration extends FileConfiguration {
@@ -29,7 +29,6 @@ public class PropertiesFileConfiguration extends FileConfiguration {
             properties = new Properties();
             properties.load(is);
         }
-        eventEmitter.emit(new ConfigurationInitializedEvent(this));
     }
 
     @Override
@@ -48,12 +47,19 @@ public class PropertiesFileConfiguration extends FileConfiguration {
     public boolean delete(String key) {
         boolean result = properties.containsKey(key);
         properties.remove(key);
+        if (result) {
+            eventEmitter.emit(new ConfigurationItemDeletedEvent(this, key));
+        }
         return result;
     }
 
     @Override
     public boolean delete(String key, String value) {
-        return properties.remove(key, value);
+        boolean result = properties.remove(key, value);
+        if (result) {
+            eventEmitter.emit(new ConfigurationItemDeletedEvent(this, key));
+        }
+        return result;
     }
 
     @Override

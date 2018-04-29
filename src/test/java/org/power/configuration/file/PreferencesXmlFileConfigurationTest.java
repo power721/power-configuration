@@ -37,6 +37,7 @@ public class PreferencesXmlFileConfigurationTest extends FileConfigurationTest {
         }
 
         conf = new PreferencesXmlFileConfiguration(file);
+        conf.getObservable().subscribe(new MyObserver<>());
     }
 
     @Test

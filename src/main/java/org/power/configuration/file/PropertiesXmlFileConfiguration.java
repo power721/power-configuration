@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-import org.power.configuration.event.ConfigurationInitializedEvent;
 import org.power.configuration.event.ConfigurationReloadedEvent;
 
 public class PropertiesXmlFileConfiguration extends PropertiesFileConfiguration {
@@ -26,7 +25,6 @@ public class PropertiesXmlFileConfiguration extends PropertiesFileConfiguration 
             properties = new Properties();
             properties.loadFromXML(is);
         }
-        eventEmitter.emit(new ConfigurationInitializedEvent(this));
     }
 
     @Override

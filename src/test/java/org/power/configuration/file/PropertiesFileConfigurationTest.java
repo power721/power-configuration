@@ -27,6 +27,7 @@ public class PropertiesFileConfigurationTest extends FileConfigurationTest {
         }
 
         conf = new PropertiesFileConfiguration(file);
+        conf.getObservable().subscribe(new MyObserver<>());
     }
 
     @Test
