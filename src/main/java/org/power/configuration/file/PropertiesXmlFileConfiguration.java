@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+import org.power.configuration.event.ConfigurationInitializedEvent;
+import org.power.configuration.event.ConfigurationReloadedEvent;
 
 public class PropertiesXmlFileConfiguration extends PropertiesFileConfiguration {
 
@@ -24,6 +26,7 @@ public class PropertiesXmlFileConfiguration extends PropertiesFileConfiguration 
             properties = new Properties();
             properties.loadFromXML(is);
         }
+        eventEmitter.emit(new ConfigurationInitializedEvent(this));
     }
 
     @Override
@@ -31,13 +34,20 @@ public class PropertiesXmlFileConfiguration extends PropertiesFileConfiguration 
         try (InputStream is = new FileInputStream(file)) {
             properties = new Properties();
             properties.loadFromXML(is);
+        } catch (IOException e) {
+            eventEmitter.error(e);
+            throw e;
         }
+        eventEmitter.emit(new ConfigurationReloadedEvent(this));
     }
 
     @Override
     protected void store(String comment) throws IOException {
         try (OutputStream out = new FileOutputStream(file)) {
             properties.storeToXML(out, comment);
+        } catch (IOException e) {
+            eventEmitter.error(e);
+            throw e;
         }
     }
 

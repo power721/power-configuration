@@ -24,10 +24,10 @@ public class EventEmitter implements Observable<ConfigurationEvent> {
     }
 
     @Override
-    public void subscribe(Observer<? super ConfigurationEvent> observer) {
+    public Subscription subscribe(Observer<? super ConfigurationEvent> observer) {
         EventSubscription subscription = new EventSubscription(observer);
         subscriptions.add(subscription);
-        observer.onSubscribe​(subscription);
+        return subscription;
     }
 
     class EventSubscription implements Subscription {
@@ -51,12 +51,12 @@ public class EventEmitter implements Observable<ConfigurationEvent> {
 
         synchronized void next(ConfigurationEvent event) {
             if (!completed) {
-                future = executor.submit(() -> observer.onNext​(event));
+                future = executor.submit(() -> observer.onNext(event));
             }
         }
 
         synchronized void error(Throwable throwable) {
-            executor.submit(() -> observer.onError​(throwable));
+            executor.submit(() -> observer.onError(throwable));
         }
 
     }

@@ -8,10 +8,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.power.configuration.util.Subscription;
 
 public class PropertiesXmlFileConfigurationTest extends PropertiesFileConfigurationTest {
+
+    private Subscription subscription;
 
     @Before
     public void setUp() throws Exception {
@@ -27,6 +31,12 @@ public class PropertiesXmlFileConfigurationTest extends PropertiesFileConfigurat
         }
 
         conf = new PropertiesXmlFileConfiguration(file);
+        subscription = conf.getObservable().subscribe(new MyObserver<>());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        subscription.unsubscribe();
     }
 
     @Test

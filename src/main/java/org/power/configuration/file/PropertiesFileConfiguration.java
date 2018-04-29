@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+import org.power.configuration.event.ConfigurationChangeEvent;
+import org.power.configuration.event.ConfigurationInitializedEvent;
+import org.power.configuration.event.ConfigurationReloadedEvent;
 
 public class PropertiesFileConfiguration extends FileConfiguration {
 
@@ -26,6 +29,7 @@ public class PropertiesFileConfiguration extends FileConfiguration {
             properties = new Properties();
             properties.load(is);
         }
+        eventEmitter.emit(new ConfigurationInitializedEvent(this));
     }
 
     @Override
@@ -36,6 +40,7 @@ public class PropertiesFileConfiguration extends FileConfiguration {
     @Override
     public String set(String key, String value) {
         Object oval = properties.setProperty(key, value);
+        eventEmitter.emit(new ConfigurationChangeEvent(this, key, oval, value));
         return (oval instanceof String) ? (String) oval : null;
     }
 
@@ -54,6 +59,7 @@ public class PropertiesFileConfiguration extends FileConfiguration {
     @Override
     public String save(String key, String value) throws IOException {
         Object oval = properties.setProperty(key, value);
+        eventEmitter.emit(new ConfigurationChangeEvent(this, key, oval, value));
         this.store("update " + key);
         return (oval instanceof String) ? (String) oval : null;
     }
@@ -63,12 +69,19 @@ public class PropertiesFileConfiguration extends FileConfiguration {
         try (InputStream is = new FileInputStream(file)) {
             properties = new Properties();
             properties.load(is);
+        } catch (IOException e) {
+            eventEmitter.error(e);
+            throw e;
         }
+        eventEmitter.emit(new ConfigurationReloadedEvent(this));
     }
 
     protected void store(String comment) throws IOException {
         try (OutputStream out = new FileOutputStream(file)) {
             properties.store(out, comment);
+        } catch (IOException e) {
+            eventEmitter.error(e);
+            throw e;
         }
     }
 

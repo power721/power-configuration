@@ -4,13 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import org.power.configuration.Configuration;
+import org.power.configuration.event.ConfigurationEvent;
+import org.power.configuration.event.EventEmitter;
+import org.power.configuration.util.Observable;
 
 public abstract class FileConfiguration implements Configuration {
 
     protected final File file;
+    protected final EventEmitter eventEmitter = new EventEmitter();
 
     protected FileConfiguration(File file) {
         this.file = file;
+    }
+
+    public Observable<ConfigurationEvent> getObservable() {
+        return eventEmitter;
     }
 
     @Override

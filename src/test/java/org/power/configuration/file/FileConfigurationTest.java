@@ -3,12 +3,16 @@ package org.power.configuration.file;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.Test;
-import org.power.configuration.Configuration;
+import org.power.configuration.util.Observer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class FileConfigurationTest {
 
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
     protected long time = 12345678900L;
-    protected Configuration conf;
+    protected FileConfiguration conf;
 
     @Test
     public void testGetValue() throws Exception {
@@ -248,6 +252,25 @@ public abstract class FileConfigurationTest {
 
         assertThat(conf.getDouble("not_exist")).isEqualTo(2.1e50);
         assertThat(conf.get("not_exist")).isEqualToIgnoringCase("2.1e50");
+    }
+
+    protected class MyObserver<ConfigurationEvent> implements Observer<ConfigurationEvent> {
+
+        @Override
+        public void onNext(ConfigurationEvent item) {
+            logger.info(item.toString());
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            logger.warn("", throwable);
+        }
+
+        @Override
+        public void onComplete() {
+            logger.info("complete");
+        }
+
     }
 
 }

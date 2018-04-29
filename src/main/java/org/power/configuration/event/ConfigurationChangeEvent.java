@@ -25,4 +25,13 @@ public class ConfigurationChangeEvent extends ConfigurationEvent {
         return newValue;
     }
 
+    @Override
+    public String toString() {
+        return "ConfigurationChangeEvent{" +
+            "key='" + key + '\'' +
+            ", oldValue=" + oldValue +
+            ", newValue=" + newValue +
+            ", source=" + source +
+            '}';
+    }
 }

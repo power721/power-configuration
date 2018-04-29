@@ -9,6 +9,9 @@ import java.util.Objects;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.InvalidPreferencesFormatException;
 import java.util.prefs.Preferences;
+import org.power.configuration.event.ConfigurationChangeEvent;
+import org.power.configuration.event.ConfigurationInitializedEvent;
+import org.power.configuration.event.ConfigurationReloadedEvent;
 
 public class PreferencesXmlFileConfiguration extends FileConfiguration {
 
@@ -26,6 +29,7 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
         } catch (InvalidPreferencesFormatException e) {
             throw new IOException("Cannot parse Preferences file.", e);
         }
+        eventEmitter.emit(new ConfigurationInitializedEvent(this));
     }
 
     @Override
@@ -38,6 +42,7 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
         Preferences node = getNode(key);
         String old = node.get(getName(key), null);
         node.put(getName(key), value);
+        eventEmitter.emit(new ConfigurationChangeEvent(this, key, old, value));
         return old;
     }
 
@@ -71,7 +76,11 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
         try (OutputStream os = new FileOutputStream(file)) {
             preferences.exportSubtree(os);
         } catch (BackingStoreException e) {
+            eventEmitter.error(e);
             throw new IOException("Cannot write preferences to file.", e);
+        } catch (IOException e) {
+            eventEmitter.error(e);
+            throw e;
         }
     }
 
@@ -80,8 +89,13 @@ public class PreferencesXmlFileConfiguration extends FileConfiguration {
         try {
             Preferences.importPreferences(new FileInputStream(file));
         } catch (InvalidPreferencesFormatException e) {
+            eventEmitter.error(e);
             throw new IOException("Cannot parse Preferences file.", e);
+        } catch (IOException e) {
+            eventEmitter.error(e);
+            throw e;
         }
+        eventEmitter.emit(new ConfigurationReloadedEvent(this));
     }
 
     private Preferences getNode(String key) {
